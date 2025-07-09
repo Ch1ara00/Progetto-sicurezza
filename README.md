@@ -55,7 +55,7 @@ Gestione sicura degli errori, in particolare per quanto riguarda le operazioni c
 
 - Limiti e sviluppi futuri
 
-Trattandosi di una demo, l'app presenta alcune limitazioni che ho già individuato:
+Trattandosi di una demo, l'app presenta alcune limitazioni:
 
 I dati sono salvati in locale e non sincronizzabili tra dispositivi.
 L’app non è ancora protetta da HTTPS, essenziale in ambienti di produzione.
