@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager Sicuro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .auth-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+        }
+
+        .password-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .password-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .password-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .password-item p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .password-display {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .strength-meter {
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+            background: #e1e5e9;
+        }
+
+        .strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background: #ff4757; }
+        .strength-medium { background: #ffa502; }
+        .strength-strong { background: #2ed573; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .generator-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .generator-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Password Manager</h1>
+            <p>Gestione sicura e crittografata delle tue password</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Sezione di autenticazione -->
+            <div id="auth-section" class="auth-section">
+                <h2>Accesso Sicuro</h2>
+                <div class="input-group">
+                    <label for="master-password">Password Master:</label>
+                    <input type="password" id="master-password" placeholder="Inserisci la tua password master">
+                </div>
+                <button class="btn" onclick="authenticate()">Accedi</button>
+                <button class="btn btn-secondary" onclick="showSetupModal()">Prima Configurazione</button>
+            </div>
+
+            <!-- Sezione principale (nascosta inizialmente) -->
+            <div id="main-section" class="hidden">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-passwords">0</div>
+                        <div>Password Salvate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="strong-passwords">0</div>
+                        <div>Password Sicure</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="weak-passwords">0</div>
+                        <div>Password Deboli</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <button class="btn" onclick="showAddModal()">➕ Aggiungi Password</button>
+                    <button class="btn btn-secondary" onclick="showGeneratorModal()">🎲 Genera Password</button>
+                    <button class="btn btn-danger" onclick="exportData()">📤 Esporta Dati</button>
+                </div>
+
+                <input type="text" class="search-box" id="search-box" placeholder="🔍 Cerca password..." onkeyup="searchPasswords()">
+
+                <div id="password-list"></div>
+            </div>
+
+            <!-- Messaggi di stato -->
+            <div id="status-message" class="status-message hidden"></div>
+        </div>
+    </div>
+
+    <!-- Modal per aggiungere password -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-modal')">&times;</span>
+            <h2>Aggiungi Nuova Password</h2>
+            <div class="input-group">
+                <label for="site-name">Nome Sito/Servizio:</label>
+                <input type="text" id="site-name" placeholder="es. Gmail, Facebook">
+            </div>
+            <div class="input-group">
+                <label for="username">Username/Email:</label>
+                <input type="text" id="username" placeholder="il tuo username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="password sicura">
+                <div id="password-strength" class="strength-meter">
+                    <div id="strength-bar" class="strength-bar"></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="notes">Note (opzionale):</label>
+                <input type="text" id="notes" placeholder="note aggiuntive">
+            </div>
+            <button class="btn" onclick="addPassword()">Salva Password</button>
+        </div>
+    </div>
+
+    <!-- Modal per il generatore di password -->
+    <div id="generator-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('generator-modal')">&times;</span>
+            <h2>Generatore Password Sicure</h2>
+            <div class="input-group">
+                <label for="password-length">Lunghezza: <span id="length-display">12</span></label>
+                <input type="range" id="password-length" min="8" max="50" value="12" onchange="updateLengthDisplay()">
+            </div>
+            <div class="generator-options">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="include-uppercase" checked>
+                    <label for="include-uppercase">Maiuscole (A-Z)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="include-lowercase" checked>
+                    <label for="include-lowercase">Minuscole (a-z)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="include-numbers" checked>
+                    <label for="include-numbers">Numeri (0-9)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="include-symbols" checked>
+                    <label for="include-symbols">Simboli (!@#$%)</label>
+                </div>
+            </div>
+            <button class="btn" onclick="generatePassword()">Genera Password</button>
+            <div class="input-group">
+                <label for="generated-password">Password Generata:</label>
+                <input type="text" id="generated-password" readonly>
+            </div>
+            <button class="btn btn-secondary" onclick="copyToClipboard('generated-password')">Copia Password</button>
+        </div>
+    </div>
+
+    <!-- Modal per configurazione iniziale -->
+    <div id="setup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('setup-modal')">&times;</span>
+            <h2>Configurazione Iniziale</h2>
+            <p>Crea una password master sicura per proteggere tutti i tuoi dati:</p>
+            <div class="input-group">
+                <label for="new-master-password">Password Master:</label>
+                <input type="password" id="new-master-password" placeholder="Crea una password master sicura">
+            </div>
+            <div class="input-group">
+                <label for="confirm-master-password">Conferma Password Master:</label>
+                <input type="password" id="confirm-master-password" placeholder="Ripeti la password master">
+            </div>
+            <button class="btn" onclick="setupMasterPassword()">Configura</button>
+        </div>
+    </div>
+
+    <script>
+        // Variabili globali
+        let masterPasswordHash = null;
+        let passwords = [];
+        let currentKey = null;
+
+        // Funzioni di crittografia usando Web Crypto API
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function deriveKey(password, salt) {
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                'PBKDF2',
+                false,
+                ['deriveBits', 'deriveKey']
+            );
+            
+            return await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: encoder.encode(salt),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                true,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encryptData(data, key) {
+            const encoder = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encoder.encode(data)
+            );
+            
+            const encryptedArray = Array.from(new Uint8Array(encrypted));
+            const ivArray = Array.from(iv);
+            return { encrypted: encryptedArray, iv: ivArray };
+        }
+
+        async function decryptData(encryptedData, key) {
+            const decoder = new TextDecoder();
+            const encrypted = new Uint8Array(encryptedData.encrypted);
+            const iv = new Uint8Array(encryptedData.iv);
+            
+            try {
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    encrypted
+                );
+                return decoder.decode(decrypted);
+            } catch (error) {
+                throw new Error('Decryption failed');
+            }
+        }
+
+        // Funzioni di gestione dell'autenticazione
+        async function setupMasterPassword() {
+            const masterPassword = document.getElementById('new-master-password').value;
+            const confirmPassword = document.getElementById('confirm-master-password').value;
+            
+            if (masterPassword !== confirmPassword) {
+                showStatus('Le password non corrispondono!', 'error');
+                return;
+            }
+            
+            if (masterPassword.length < 8) {
+                showStatus('La password master deve essere di almeno 8 caratteri!', 'error');
+                return;
+            }
+            
+            try {
+                const hash = await hashPassword(masterPassword);
+                const passwordData = {
+                    masterHash: hash,
+                    passwords: []
+                };
+                
+                // Salva i dati nel localStorage (simulazione)
+                localStorage.setItem('passwordManagerData', JSON.stringify(passwordData));
+                
+                showStatus('Password master configurata con successo!', 'success');
+                closeModal('setup-modal');
+                
+                // Pulisci i campi
+                document.getElementById('new-master-password').value = '';
+                document.getElementById('confirm-master-password').value = '';
+                
+            } catch (error) {
+                showStatus('Errore durante la configurazione: ' + error.message, 'error');
+            }
+        }
+
+        async function authenticate() {
+            const masterPassword = document.getElementById('master-password').value;
+            
+            if (!masterPassword) {
+                showStatus('Inserisci la password master!', 'error');
+                return;
+            }
+            
+            try {
+                const data = JSON.parse(localStorage.getItem('passwordManagerData') || '{}');
+                
+                if (!data.masterHash) {
+                    showStatus('Nessuna configurazione trovata. Esegui la configurazione iniziale.', 'error');
+                    return;
+                }
+                
+                const inputHash = await hashPassword(masterPassword);
+                
+                if (inputHash === data.masterHash) {
+                    masterPasswordHash = inputHash;
+                    currentKey = await deriveKey(masterPassword, 'salt123'); 
+                    passwords = data.passwords || [];
+                    
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-section').classList.remove('hidden');
+                    
+                    await loadPasswords();
+                    updateStats();
+                    showStatus('Accesso effettuato con successo!', 'success');
+                } else {
+                    showStatus('Password master non corretta!', 'error');
+                }
+                
+            } catch (error) {
+                showStatus('Errore durante l\'autenticazione: ' + error.message, 'error');
+            }
+        }
+
+        // Funzioni di gestione delle password
+        async function addPassword() {
+            const siteName = document.getElementById('site-name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!siteName || !username || !password) {
+                showStatus('Compila tutti i campi obbligatori!', 'error');
+                return;
+            }
+            
+            try {
+                const passwordData = {
+                    id: Date.now().toString(),
+                    siteName: siteName,
+                    username: username,
+                    password: await encryptData(password, currentKey),
+                    notes: notes,
+                    createdAt: new Date().toISOString(),
+                    strength: calculatePasswordStrength(password)
+                };
+                
+                passwords.push(passwordData);
+                await savePasswords();
+                loadPasswords();
+                updateStats();
+                
+                closeModal('add-modal');
+                clearAddForm();
+                showStatus('Password aggiunta con successo!', 'success');
+                
+            } catch (error) {
+                showStatus('Errore durante il salvataggio: ' + error.message, 'error');
+            }
+        }
+
+        async function deletePassword(id) {
+            if (confirm('Sei sicuro di voler eliminare questa password?')) {
+                passwords = passwords.filter(p => p.id !== id);
+                await savePasswords();
+                loadPasswords();
+                updateStats();
+                showStatus('Password eliminata con successo!', 'success');
+            }
+        }
+
+        async function togglePasswordVisibility(id) {
+            const passwordElement = document.getElementById(`password-${id}`);
+            const toggleButton = document.getElementById(`toggle-${id}`);
+            
+            if (passwordElement.type === 'password') {
+                try {
+                    const passwordData = passwords.find(p => p.id === id);
+                    const decryptedPassword = await decryptData(passwordData.password, currentKey);
+                    passwordElement.type = 'text';
+                    passwordElement.value = decryptedPassword;
+                    toggleButton.textContent = '🙈';
+                } catch (error) {
+                    showStatus('Errore durante la decrittografia: ' + error.message, 'error');
+                }
+            } else {
+                passwordElement.type = 'password';
+                passwordElement.value = '••••••••';
+                toggleButton.textContent = '👁️';
+            }
+        }
+
+        async function copyPassword(id) {
+            try {
+                const passwordData = passwords.find(p => p.id === id);
+                const decryptedPassword = await decryptData(passwordData.password, currentKey);
+                
+                await navigator.clipboard.writeText(decryptedPassword);
+                showStatus('Password copiata negli appunti!', 'success');
+            } catch (error) {
+                showStatus('Errore durante la copia: ' + error.message, 'error');
+            }
+        }
+
+        // Funzioni di salvataggio e caricamento
+        async function savePasswords() {
+            const data = {
+                masterHash: masterPasswordHash,
+                passwords: passwords
+            };
+            localStorage.setItem('passwordManagerData', JSON.stringify(data));
+        }
+
+        async function loadPasswords() {
+            const passwordList = document.getElementById('password-list');
+            passwordList.innerHTML = '';
+            
+            for (const password of passwords) {
+                const passwordItem = document.createElement('div');
+                passwordItem.className = 'password-item';
+                passwordItem.innerHTML = `
+                    <h3>${password.siteName}</h3>
+                    <p><strong>Username:</strong> ${password.username}</p>
+                    <p><strong>Password:</strong> 
+                        <input type="password" id="password-${password.id}" value="••••••••" readonly class="password-display">
+                        <button class="btn" id="toggle-${password.id}" onclick="togglePasswordVisibility('${password.id}')">👁️</button>
+                        <button class="btn btn-secondary" onclick="copyPassword('${password.id}')">📋</button>
+                    </p>
+                    <p><strong>Sicurezza:</strong> <span class="strength-${password.strength}">${password.strength.charAt(0).toUpperCase() + password.strength.slice(1)}</span></p>
+                    ${password.notes ? `<p><strong>Note:</strong> ${password.notes}</p>` : ''}
+                    <p><small>Creata il: ${new Date(password.createdAt).toLocaleString('it-IT')}</small></p>
+                    <button class="btn btn-danger" onclick="deletePassword('${password.id}')">🗑️ Elimina</button>
+                `;
+                passwordList.appendChild(passwordItem);
+            }
+        }
+
+        // Funzione di ricerca
+        function searchPasswords() {
+            const searchTerm = document.getElementById('search-box').value.toLowerCase();
+            const passwordItems = document.querySelectorAll('.password-item');
+            
+            passwordItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Generatore di password
+        function generatePassword() {
+            const length = parseInt(document.getElementById('password-length').value);
+            const includeUppercase = document.getElementById('include-uppercase').checked;
+            const includeLowercase = document.getElementById('include-lowercase').checked;
+            const includeNumbers = document.getElementById('include-numbers').checked;
+            const includeSymbols = document.getElementById('include-symbols').checked;
+            
+            let charset = '';
+            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (charset === '') {
+                showStatus('Seleziona almeno un tipo di carattere!', 'error');
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            document.getElementById('generated-password').value = password;
+        }
+
+        // Calcolo della sicurezza della password
+        
+function calculatePasswordStrength(password) {
+    const result = zxcvbn(password);
+    if (result.score <= 1) return 'weak';
+    if (result.score === 2 || result.score === 3) return 'medium';
+    return 'strong';
+}
+
+
+        // Aggiornamento della barra di sicurezza in tempo reale
+        document.getElementById('password')?.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            const strengthBar = document.getElementById('strength-bar');
+            
+            strengthBar.className = `strength-bar strength-${strength}`;
+            strengthBar.style.width = strength === 'weak' ? '33%' : strength === 'medium' ? '66%' : '100%';
+        });
+
+        // Aggiornamento statistiche
+        function updateStats() {
+            const total = passwords.length;
+            const strong = passwords.filter(p => p.strength === 'strong').length;
+            const weak = passwords.filter(p => p.strength === 'weak').length;
+            
+            document.getElementById('total-passwords').textContent = total;
+            document.getElementById('strong-passwords').textContent = strong;
+            document.getElementById('weak-passwords').textContent = weak;
+        }
+
+        // Funzioni di utilità
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${type}`;
+            statusElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        function showAddModal() {
+            document.getElementById('add-modal').style.display = 'block';
+        }
+
+        function showGeneratorModal() {
+            document.getElementById('generator-modal').style.display = 'block';
+        }
+
+        function showSetupModal() {
+            document.getElementById('setup-modal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function clearAddForm() {
+            document.getElementById('site-name').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('notes').value = '';
+        }
+
+        function updateLengthDisplay() {
+            const length = document.getElementById('password-length').value;
+            document.getElementById('length-display').textContent = length;
+        }
+
+        async function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            try {
+                await navigator.clipboard.writeText(element.value);
+                showStatus('Copiato negli appunti!', 'success');
+            } catch (error) {
+                showStatus('Errore durante la copia: ' + error.message, 'error');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                exported: new Date().toISOString(),
+                passwords: passwords.map(p => ({
+                    siteName: p.siteName,
+                    username: p.username,
+                    notes: p.notes,
+                    createdAt: p.createdAt,
+                    strength: p.strength
+                    // Note: password non esportata per sicurezza
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'password-manager-export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus('Dati esportati con successo!', 'success');
+        }
+
+        // Chiusura modal cliccando fuori
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Controlla se esistono dati salvati
+            const savedData = localStorage.getItem('passwordManagerData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    if (data.masterHash) {
+                        // Dati esistenti trovati
+                        console.log('Dati esistenti trovati. Accesso richiesto.');
+                    }
+                } catch (error) {
+                    console.error('Errore nel caricamento dei dati:', error);
+                }
+            }
+        });
+
+        // Gestione dei tasti di scelta rapida
+        document.addEventListener('keydown', function(event) {
+            // Ctrl/Cmd + G per generare password
+            if ((event.ctrlKey || event.metaKey) && event.key === 'g') {
+                event.preventDefault();
+                if (!document.getElementById('main-section').classList.contains('hidden')) {
+                    showGeneratorModal();
+                }
+            }
+            
+            // Ctrl/Cmd + N per aggiungere password
+            if ((event.ctrlKey || event.metaKey) && event.key === 'n') {
+                event.preventDefault();
+                if (!document.getElementById('main-section').classList.contains('hidden')) {
+                    showAddModal();
+                }
+            }
+            
+            // Escape per chiudere modal
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Validazione in tempo reale per il setup
+        document.getElementById('new-master-password')?.addEventListener('input', function() {
+            const password = this.value;
+            const confirmField = document.getElementById('confirm-master-password');
+            
+            // Controlla lunghezza minima
+            if (password.length < 8) {
+                this.style.borderColor = '#ff4757';
+            } else {
+                this.style.borderColor = '#2ed573';
+            }
+            
+            // Controlla corrispondenza se il campo conferma non è vuoto
+            if (confirmField.value && confirmField.value !== password) {
+                confirmField.style.borderColor = '#ff4757';
+            } else if (confirmField.value === password && password.length >= 8) {
+                confirmField.style.borderColor = '#2ed573';
+            }
+        });
+
+        document.getElementById('confirm-master-password')?.addEventListener('input', function() {
+            const password = document.getElementById('new-master-password').value;
+            const confirm = this.value;
+            
+            if (confirm !== password) {
+                this.style.borderColor = '#ff4757';
+            } else if (password.length >= 8) {
+                this.style.borderColor = '#2ed573';
+            }
+        });
+
+        // Auto-logout dopo inattività (opzionale)
+        let inactivityTimer;
+        const INACTIVITY_TIME = 30 * 60 * 1000; // 30 minuti
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                if (!document.getElementById('main-section').classList.contains('hidden')) {
+                    logout();
+                }
+            }, INACTIVITY_TIME);
+        }
+
+        function logout() {
+            document.getElementById('main-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('master-password').value = '';
+            masterPasswordHash = null;
+            currentKey = null;
+            passwords = [];
+            showStatus('Sessione scaduta per inattività', 'error');
+        }
+
+        // Monitora l'attività dell'utente
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+
+        // Funzione per importare dati (bonus)
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            // Qui si potrebbe aggiungere logica per importare i dati
+                            console.log('Dati importati:', importedData);
+                            showStatus('Funzione di importazione in sviluppo', 'error');
+                        } catch (error) {
+                            showStatus('Errore nell\'importazione: file non valido', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // Controllo della forza della password in tempo reale nel generatore
+        document.getElementById('generated-password')?.addEventListener('input', function() {
+            const password = this.value;
+            if (password) {
+                const strength = calculatePasswordStrength(password);
+                
+            }
+        });
+
+        // Funzione di backup automatico (simulato)
+        function autoBackup() {
+            if (passwords.length > 0) {
+                const backupData = {
+                    timestamp: new Date().toISOString(),
+                    count: passwords.length
+                };
+                localStorage.setItem('passwordManagerBackup', JSON.stringify(backupData));
+                console.log('Backup automatico eseguito');
+            }
+        }
+
+        // Esegui backup ogni 5 minuti se ci sono password salvate
+        setInterval(autoBackup, 5 * 60 * 1000);
+
+        // Gestione degli errori globale
+        window.addEventListener('error', function(event) {
+            console.error('Errore globale:', event.error);
+            showStatus('Si è verificato un errore imprevisto', 'error');
+        });
+
+        // Prevenzione del clic destro per maggiore sicurezza (opzionale)
+        document.addEventListener('contextmenu', function(event) {
+            if (event.target.classList.contains('password-display')) {
+                event.preventDefault();
+            }
+        });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.js"></script>
+</body>
+</html>
