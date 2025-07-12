@@ -63,7 +63,7 @@ Trattandosi di una demo, l'applicazione presenta alcune limitazioni:
 - Manca un sistema di autenticazione a due fattori (**2FA**).
 - Non è ancora presente una gestione avanzata delle sessioni (es. **WebAuthn** o accesso biometrico).
 
-Miglioramenti futuri previsti:
+Possibili miglioramenti futuri:
 
 - Sviluppare un backend sicuro con salvataggio cifrato.
 - Aggiungere sincronizzazione multi-dispositivo.
