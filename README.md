@@ -31,7 +31,7 @@ Inoltre, per evitare la perdita dei dati, è presente un sistema di **backup loc
 
 ## Interfaccia utente e accessibilità
 
-L’interfaccia è stata progettata con attenzione all’esperienza d’uso. È responsiva, quindi utilizzabile anche da dispositivi mobili, e presenta un design moderno, con animazioni leggere e colori accessibili. Sono stati utilizzati elementi semantici di **HTML5**, con supporto alla navigazione da tastiera, nel rispetto delle linee guida **WCAG** sull’accessibilità.
+L’interfaccia è stata progettata con attenzione all’esperienza d’uso. Sono stati utilizzati elementi semantici di **HTML5**, con supporto alla navigazione da tastiera, nel rispetto delle linee guida **WCAG** sull’accessibilità.
 
 L’interazione è semplice e intuitiva. L’app fornisce feedback visivi immediati (messaggi di stato, indicatori di forza delle password, icone per il copia/incolla e toggle visibilità).
 
